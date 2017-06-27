@@ -1,4 +1,4 @@
-define(function(){
+define(['helpers'], function(helpers){
 
     'use strict';
 
@@ -27,7 +27,7 @@ define(function(){
         // Return to initial state since no more to pop.
         if (this.states.length === 0) {
             this.Top().Enter();
-            log("A state changed to: " + this.initialState.id);
+            helpers.log("A state changed to: " + this.initialState.id);
             return;
         }
 
@@ -53,7 +53,7 @@ define(function(){
             return;
         }
 
-        log("A state changed to: " + state.id);
+        helpers.log("A state changed to: " + state.id);
 
         this.states.push(state);
         this.Top().Enter(params, cb);

@@ -1,4 +1,4 @@
-define(function(){
+define(['Base'], function(StateBase){
 
     'use strict';
 

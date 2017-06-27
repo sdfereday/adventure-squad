@@ -1,4 +1,4 @@
-define(function(){
+define(['Base', 'helpers'], function(StateBase, helpers){
 
     'use strict';
 
@@ -21,7 +21,7 @@ define(function(){
     StateMove.prototype.Update = function () {
         // ...
 
-        if (Math.abs(dist(this.params, {
+        if (Math.abs(helpers.dist(this.params, {
             x: this.owner.x,
             y: this.owner.y
         })) > 1) {
@@ -44,7 +44,7 @@ define(function(){
             this.owner.Move(x, y);
 
         } else {
-            log(">");
+            helpers.log(">");
             this.isFinished = true;
         }
 
@@ -64,7 +64,7 @@ define(function(){
 
     StateMove.prototype.Exit = function (params) {
 
-        log("Left state " + this.id);
+        helpers.log("Left state " + this.id);
 
         if (typeof this.onComplete === 'function')
             this.onComplete(this);

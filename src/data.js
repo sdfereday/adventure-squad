@@ -1,6 +1,12 @@
 define(function () {
 
+    const locationTypes = {
+        HOME: 0
+    };
+
     return {
+
+        locationTypes: locationTypes,
 
         locations: [{
             name: "Guild Of Steve",
@@ -8,6 +14,7 @@ define(function () {
             x: 20,
             y: 20,
             visited: false,
+            type: locationTypes.HOME,
             meta: {},
             locations: [{
                 name: "Bathroom",
@@ -45,7 +52,7 @@ define(function () {
         }],
 
         getLocation: function (str) {
-            return locations.find(function (item) {
+            return this.locations.find(function (item) {
                 return item.name === str;
             });
         }

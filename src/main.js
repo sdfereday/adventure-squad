@@ -1,8 +1,13 @@
-require(['Chance'], function (Chance) {
+require([
+    'Hero',
+    'Chance',
+    'data',
+    'helpers'
+], function (Hero, Chance, data, helpers) {
 
     'use strict';
 
-    var ch = new Chance();
+    var chance = new Chance();
 
     var gameloop = (function () {
 
@@ -21,49 +26,51 @@ require(['Chance'], function (Chance) {
                 lastUpdate = +new Date();
             }());
         };
-        
+
     }());
-
-    // Helpers
-    function dist(v1, v2) {
-        var a = v1.x - v2.x;
-        var b = v1.y - v2.y;
-        return Math.sqrt(a * a + b * b);
-    }
-
-    function log(str, nobreak) {
-
-        var objDiv = document.getElementById("console");
-        objDiv.scrollTop = objDiv.scrollHeight;
-
-        if (nobreak) {
-            document.getElementById("innerText").innerHTML += str
-            return;
-        }
-
-        document.getElementById("innerText").innerHTML += str + "<br />";
-
-    }
 
     // Global manager
     var GameManager = {
 
         hero: null,
+        globalWallet: 0,
 
         startup: function () {
             this.hero = new Hero(1, 1);
-            log(this.hero.name + " entered the fray.");
+            helpers.log(this.hero.name + " entered the fray.");
         },
         update: function () {
             this.hero.Update();
         },
 
         visit: function (str) {
-            var loc = getLocation(str);
+            var loc = data.getLocation(str);
+            let self = this;
             if (!loc) {
                 throw "No such place.";
             }
-            this.hero.SetDestination(loc);
+            this.hero.SetDestination(loc, function (loc) {
+                if (loc.type != 'undefined' && loc.type === data.locationTypes.HOME) {
+
+                    let goldAdded = self.hero.TakeFromWallet(10);
+                    self.globalWallet += goldAdded;
+
+                    self.hero.AddExp(chance.integer({min: 20, max: 100}));
+
+                    if(goldAdded === 0) {
+                        helpers.log(self.hero.name + " returned to the guild empty handed...");
+                        return;
+                    }
+
+                    helpers.log(self.hero.name + " returned to the guild and added " + goldAdded + " gold to the treasurey.");
+                    helpers.log(self.hero.name + " kept the rest for himself and has " + self.hero.wallet + " gold to his name.");
+
+                } else {
+                    let n = chance.integer({min: 20, max: 200});
+                    self.hero.AddToWallet(n); // Get this from data in future
+                    helpers.log(self.hero.name + " found " + n + " gold.");
+                }
+            });
         }
 
     };

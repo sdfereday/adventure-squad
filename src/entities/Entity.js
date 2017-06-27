@@ -1,44 +1,71 @@
-define(function() {
+define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function(StateMachine, StateIdle, StateMove, helpers, data) {
     
     'use strict';
     
     var Entity = function (x, y) {
+        
         this.id = "";
         this.x = x;
         this.y = y;
+        
         this.fsm = new StateMachine(new StateIdle("idle", this), [
             new StateMove("move", this)
         ]);
+        
         this.headingTo = null;
         this.isTravelling = false;
+        this.onArrivedCallback = null;
+        
+        // TODO: Should be a constant (to begin with, add to data?)
+        this.currentLevel = 1;
+        this.currentExp = 0;
+        this.expForLevel = 500;
+
     };
 
-    Entity.prototype.SetDestination = function (d) {
+    Entity.prototype.AddExp = function (n) {
+
+        let values = helpers.calculateExp(this.currentLevel, n, this.expForLevel);
+
+        if(values.level > this.currentLevel)
+            helpers.log(this.name + " leveled up! > " + this.currentLevel);
+
+        this.currentLevel = values.level;
+        this.currentExp = values.exp;
+        this.expForLevel = values.forNext;
+
+    };
+
+    Entity.prototype.SetDestination = function (d, cb) {
 
         var self = this;
 
+        if(typeof cb === 'function')
+            this.onArrivedCallback = cb;
+
         if (this.isTravelling) {
-            log("Already travelling somewhere.");
+            helpers.log("Already travelling somewhere.");
             return;
         }
 
         if (this.headingTo && d.id === this.headingTo.id) {
-            log("Already at that location.");
+            helpers.log("Already at that location.");
             return;
         } else {
-            log("Travelling to " + d.name);
+            helpers.log("Travelling to " + d.name);
             this.isTravelling = true;
         }
 
-        var dest = locations.find(function (item) {
+        var dest = data.locations.find(function (item) {
             return item.x === d.x && item.y === d.y;
         });
 
         if (dest) {
             this.headingTo = dest;
             this.fsm.Push("move", dest, function () {
-                log("Arrived at " + d.name);
+                helpers.log("Arrived at " + d.name);
                 self.isTravelling = false;
+                self.onArrivedCallback(d);
             });
         }
 
@@ -49,16 +76,16 @@ define(function() {
         this.x += x;
         this.y += y;
 
-        log("= ", true);
+        helpers.log("= ", true);
 
         if (chance.weighted([0, 1], [0.99, 0.01])) {
-            log(">");
-            log("Ate a sandwich >");
+            helpers.log(">");
+            helpers.log("Ate a sandwich >");
         }
 
         if (chance.weighted([0, 1], [0.999, 0.001])) {
-            log(">");
-            log("Killed a Gnoll but got nothing >");
+            helpers.log(">");
+            helpers.log("Killed a Gnoll but got nothing >");
         }
 
     };
