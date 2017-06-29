@@ -6,27 +6,7 @@
         "y": 20,
         "visited": false,
         "type": 0,
-        "meta": {},
-        "locations": [
-            {
-                "name": "Job Office",
-                "id": "joboffice",
-                "x": 30,
-                "y": 30,
-                "visited": false,
-                "portal": false,
-                "meta": {}
-            },
-            {
-                "name": "Entrance",
-                "id": "entrance",
-                "x": 1,
-                "y": 1,
-                "visited": false,
-                "portal": true,
-                "meta": {}
-            }
-        ]
+        "meta": {}
     },
     {
         "name": "Dungeon Of The Nameless",
@@ -35,17 +15,6 @@
         "y": 220,
         "visited": false,
         "type": 1,
-        "meta": {},
-        "locations": [
-            {
-                "name": "Entrance",
-                "id": "entrance",
-                "x": 1,
-                "y": 1,
-                "visited": false,
-                "portal": true,
-                "meta": {}
-            }
-        ]
+        "meta": {}
     }
 ]

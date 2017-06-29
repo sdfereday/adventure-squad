@@ -44,18 +44,6 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function (StateMachi
 
     };
 
-    Entity.prototype.HasItem = function (str) {
-
-        return true;
-
-    };
-
-    Entity.prototype.RemoveItem = function (str, n) {
-
-        // ...
-
-    };
-
     Entity.prototype.SetDestination = function (d, cb) {
 
         var self = this;

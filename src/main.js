@@ -59,21 +59,11 @@ require([
     // Game automated actions
     let travelActions = {
 
-        // Acquisiton
         FindGold: function () {
             return chance.integer({ min: 20, max: 200 });
         },
 
-        FindItem: function () {
-            // ...
-        },
-
-        FightMonster: function () {
-            // ...
-        },
-
-        // Usage
-        UseItem: function () {
+        Rest: function () {
             // ...
         }
 
@@ -102,33 +92,60 @@ require([
 
             this.hero.Update();
 
-            if (this.hero.isTravelling) {
+            // Currently delving at destination
+            if (this.hero.isDelving) {
 
                 helpers.log("= ", true);
 
                 if (chance.weighted([0, 1], [0.99, 0.01])) {
 
-                    if (!this.hero.HasItem("sandwich"))
-                        return;
-
                     helpers.log(">");
-                    helpers.log("Ate a sandwich >");
+                    helpers.log("Rested >");
 
-                    this.hero.RemoveItem("sandwich", 1);
+                    return;
 
                 }
 
                 if (chance.weighted([0, 1], [0.999, 0.01])) {
 
                     helpers.log(">");
-                    helpers.log("Killed a Gnoll >");
+                    helpers.log("Killed a Nameless Gnoll >");
 
-                    this.hero.AddToWallet( travelActions.FindGold() );
+                    this.hero.AddToWallet(travelActions.FindGold());
                     this.hero.AddExp(systemActions.GenerateExp());
+
+                    return;
+
+                }
+
+                if (chance.weighted([0, 1], [0.99, 0.01])) {
+
+                    helpers.log(">");
+                    helpers.log("Found something shiny >");
+
+                    this.hero.AddToWallet(travelActions.FindGold());
+
+                    return;
 
                 }
 
             }
+
+            // Currently travelling to a destination
+            if (this.hero.isTravelling) {
+
+                if (chance.weighted([0, 1], [0.99, 0.01])) {
+
+                    helpers.log(">");
+                    helpers.log("Rested >");
+
+                    return;
+
+                }
+
+            }
+
+            // Resting, eating, inn, commerce, etc...
 
         },
 
@@ -141,7 +158,13 @@ require([
 
             this.hero.SetDestination.call(this, loc, function (loc) {
 
-                if (loc.type != 'undefined' && loc.type === data.locationTypes.HOME) {
+                if (loc.type === 'undefined')
+                    return;
+
+                if (loc.type === data.locationTypes.HOME) {
+
+                    // If success, get gold, info, etc.
+                    // ...
 
                     let goldAdded = this.hero.TakeFromWallet(gameGlobals.takePercentage);
                     data.AddToWallet(goldAdded);
@@ -156,12 +179,19 @@ require([
                     helpers.log(this.hero.name + " returned to the guild and added " + goldAdded + " gold to the treasurey.");
                     helpers.log(this.hero.name + " kept the rest for himself and has " + this.hero.wallet + " gold to his name.");
 
-                } else {
+                    if(this.hero.carries)
+                        userData.keyItems.push( this.hero.RemoveKeyItem() );
 
-                    let n = travelActions.FindGold();
 
-                    this.hero.AddToWallet(n); // Get this from data in future
-                    helpers.log(this.hero.name + " found " + n + " gold.");
+                } else if (loc.type === data.locationTypes.DUNGEON) {
+
+                    // Ignoring a last boss factor
+                    this.hero.AddKeyItem("someItemIdInDungeon");
+
+                    if (this.hero.carries) {
+                        helpers.log(this.hero.name + " acquired the key item {{itemName}} and is returning to the guild!");
+                        GameManager.Visit("Guild Of Steve");
+                    }
 
                 }
 
@@ -172,16 +202,13 @@ require([
 
     // Run
     GameManager.Startup();
+
     gameloop(function (dt) {
         GameManager.Update();
     });
 
     document.getElementById("dungeon").addEventListener('click', function () {
         GameManager.Visit("Dungeon Of The Nameless");
-    });
-
-    document.getElementById("guild").addEventListener('click', function () {
-        GameManager.Visit("Guild Of Steve");
     });
 
 });

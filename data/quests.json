@@ -1,0 +1,30 @@
+[
+    {
+        "id": "forestPatrol1",
+        "meta": {
+            "title": "Patrol The Forest",
+            "description": "A series of attacks from forest Gnolls have been reported by travelling merchants in the surrounding woodlands. Find them and put a stop to their ways.",
+            "level": 1,
+            "delveMinutes": 5,
+            "rewards": {
+                "gold": 200,
+                "keyItem": "",
+                "fame": 30
+            }
+        }
+    },
+    {
+        "id": "delve1",
+        "meta": {
+            "title": "Dungeon Of The Nameless",
+            "description": "A recent survey has released information about an ancient dungeon in the Northern reaches. It's bound to have something interesting in there...",
+            "level": 3,
+            "delveMinutes": 15,
+            "rewards": {
+                "gold": 2000,
+                "keyItem": "namelessMask",
+                "fame": 300
+            }
+        }
+    }
+]

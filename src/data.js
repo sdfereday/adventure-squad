@@ -62,7 +62,8 @@ define(function () {
 
     /// Global user data
     let userData = {
-        wallet: 0
+        wallet: 0,
+        keyItems: []
     };
 
     return {
