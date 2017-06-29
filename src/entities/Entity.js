@@ -1,21 +1,29 @@
-define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function(StateMachine, StateIdle, StateMove, helpers, data) {
-    
+define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function (StateMachine, StateIdle, StateMove, helpers, data) {
+
     'use strict';
-    
+
     var Entity = function (x, y) {
-        
+
         this.id = "";
         this.x = x;
         this.y = y;
-        
-        this.fsm = new StateMachine(new StateIdle("idle", this), [
-            new StateMove("move", this)
-        ]);
-        
+
         this.headingTo = null;
         this.isTravelling = false;
         this.onArrivedCallback = null;
-        
+
+        this.fsm = new StateMachine(new StateIdle("idle", this), [
+            new StateMove("move", this)
+        ]);
+
+        // Comes from json in practice
+        this.stats = {
+            hp: {
+                max: 299,
+                current: 299
+            }
+        };
+
         // TODO: Should be a constant (to begin with, add to data?)
         this.currentLevel = 1;
         this.currentExp = 0;
@@ -27,7 +35,7 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function(StateMachin
 
         let values = helpers.calculateExp(this.currentLevel, n, this.expForLevel);
 
-        if(values.level > this.currentLevel)
+        if (values.level > this.currentLevel)
             helpers.log(this.name + " leveled up! > " + this.currentLevel);
 
         this.currentLevel = values.level;
@@ -36,11 +44,23 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function(StateMachin
 
     };
 
+    Entity.prototype.HasItem = function (str) {
+
+        return true;
+
+    };
+
+    Entity.prototype.RemoveItem = function (str, n) {
+
+        // ...
+
+    };
+
     Entity.prototype.SetDestination = function (d, cb) {
 
         var self = this;
 
-        if(typeof cb === 'function')
+        if (typeof cb === 'function')
             this.onArrivedCallback = cb;
 
         if (this.isTravelling) {
@@ -76,18 +96,6 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function(StateMachin
         this.x += x;
         this.y += y;
 
-        helpers.log("= ", true);
-
-        if (chance.weighted([0, 1], [0.99, 0.01])) {
-            helpers.log(">");
-            helpers.log("Ate a sandwich >");
-        }
-
-        if (chance.weighted([0, 1], [0.999, 0.001])) {
-            helpers.log(">");
-            helpers.log("Killed a Gnoll but got nothing >");
-        }
-
     };
 
     Entity.prototype.Update = function () {
@@ -97,5 +105,5 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function(StateMachin
     };
 
     return Entity;
-    
+
 });

@@ -1,0 +1,17 @@
+[
+    {
+        "id": "hero-a",
+        "name": "Jake",
+        "currentLevel": 1,
+        "currentExp": 0,
+        "expForLevel": 500,
+        "stats": {
+            "hp": {
+                "max": 299,
+                "current": 299
+            },
+            "str": 12,
+            "def": 9
+        }
+    }
+]

@@ -1,14 +1,15 @@
 define(function () {
 
+    /// Enums
     const locationTypes = {
-        HOME: 0
+        HOME: 0,
+        DUNGEON: 1
     };
 
-    return {
+    /// Map data
+    let mapData = {
 
-        locationTypes: locationTypes,
-
-        locations: [{
+        locationData: [{
             name: "Guild Of Steve",
             id: "guildOfSteve",
             x: 20,
@@ -51,11 +52,25 @@ define(function () {
             }]
         }],
 
-        getLocation: function (str) {
-            return this.locations.find(function (item) {
+        GetLocation: function (str) {
+            return mapData.locationData.find(function (item) {
                 return item.name === str;
             });
         }
+
+    };
+
+    /// Global user data
+    let userData = {
+        wallet: 0
+    };
+
+    return {
+
+        user: userData,
+        locationTypes: locationTypes,
+        locations: mapData.locationData,
+        map: mapData
 
     };
 

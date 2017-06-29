@@ -1,0 +1,15 @@
+[
+    {
+        "id": "monster-a",
+        "name": "Grass Gnoll",
+        "currentLevel": 2,
+        "stats": {
+            "hp": {
+                "max": 122,
+                "current": 122
+            },
+            "str": 16,
+            "def": 14
+        }
+    }
+]

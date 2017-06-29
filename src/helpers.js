@@ -34,7 +34,7 @@ define(function () {
             }
 
             return {
-                forNext: Math.floor(forLevel * 0.02),
+                forNext: Math.floor(forLevel * 0.05),
                 exp: forLevel - excess,
                 level: newLevel
             };
