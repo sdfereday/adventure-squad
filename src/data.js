@@ -1,5 +1,7 @@
 define(function () {
 
+    'use strict';
+
     /// Enums
     const locationTypes = {
         HOME: 0,
@@ -40,6 +42,7 @@ define(function () {
             x: 220,
             y: 220,
             visited: false,
+            type: locationTypes.DUNGEON,
             meta: {},
             locations: [{
                 name: "Entrance",
@@ -63,7 +66,10 @@ define(function () {
     /// Global user data
     let userData = {
         wallet: 0,
-        keyItems: []
+        keyItems: [],
+        AddToWallet: function(n) {
+            userData.wallet += n;
+        }
     };
 
     return {

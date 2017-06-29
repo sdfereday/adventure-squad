@@ -56,7 +56,7 @@ require([
         takePercentage: 10
     };
 
-    // Game automated actions
+    // Game automated actions (singleton)
     let travelActions = {
 
         FindGold: function () {
@@ -78,86 +78,34 @@ require([
     };
 
     // Global manager
-    var GameManager = {
+    let GameManager = {
 
         heroes: [],
-        hero: null,
 
         Startup: function () {
-            this.hero = new Hero(1, 1);
-            helpers.log(this.hero.name + " entered the fray.");
+            
+            this.heroes.push(new Hero(1, 1, "Jake"), new Hero(2, 2, "Tia"));
+
         },
 
         Update: function () {
 
-            this.hero.Update();
-
-            // Currently delving at destination
-            if (this.hero.isDelving) {
-
-                helpers.log("= ", true);
-
-                if (chance.weighted([0, 1], [0.99, 0.01])) {
-
-                    helpers.log(">");
-                    helpers.log("Rested >");
-
-                    return;
-
-                }
-
-                if (chance.weighted([0, 1], [0.999, 0.01])) {
-
-                    helpers.log(">");
-                    helpers.log("Killed a Nameless Gnoll >");
-
-                    this.hero.AddToWallet(travelActions.FindGold());
-                    this.hero.AddExp(systemActions.GenerateExp());
-
-                    return;
-
-                }
-
-                if (chance.weighted([0, 1], [0.99, 0.01])) {
-
-                    helpers.log(">");
-                    helpers.log("Found something shiny >");
-
-                    this.hero.AddToWallet(travelActions.FindGold());
-
-                    return;
-
-                }
-
-            }
-
-            // Currently travelling to a destination
-            if (this.hero.isTravelling) {
-
-                if (chance.weighted([0, 1], [0.99, 0.01])) {
-
-                    helpers.log(">");
-                    helpers.log("Rested >");
-
-                    return;
-
-                }
-
-            }
-
-            // Resting, eating, inn, commerce, etc...
+            this.heroes.forEach(x => x.Update());
+            // Resting, eating, inn, commerce, etc states would be good.
 
         },
 
         Visit: function (str) {
 
-            var loc = data.map.GetLocation(str);
+            let loc = data.map.GetLocation(str);
 
             if (!loc)
                 throw "No such place.";
 
-            this.hero.SetDestination.call(this, loc, function (loc) {
+            this.hero.SetDestination.call(this.hero, loc, function (loc) {
 
+                //// Again, these should be in a state that sits on the hero.
+                /// Fired on destination reached
                 if (loc.type === 'undefined')
                     return;
 
@@ -166,31 +114,54 @@ require([
                     // If success, get gold, info, etc.
                     // ...
 
-                    let goldAdded = this.hero.TakeFromWallet(gameGlobals.takePercentage);
-                    data.AddToWallet(goldAdded);
+                    let goldAdded = this.TakeFromWallet(gameGlobals.takePercentage);
+                    data.user.AddToWallet(goldAdded);
 
-                    this.hero.AddExp(systemActions.GenerateExp());
+                    this.AddExp(systemActions.GenerateExp());
 
                     if (goldAdded === 0) {
                         helpers.log(this.hero.name + " returned to the guild empty handed...");
                         return;
                     }
 
-                    helpers.log(this.hero.name + " returned to the guild and added " + goldAdded + " gold to the treasurey.");
-                    helpers.log(this.hero.name + " kept the rest for himself and has " + this.hero.wallet + " gold to his name.");
+                    helpers.log(this.name + " returned to the guild and added " + goldAdded + " gold to the treasury.");
+                    helpers.log(this.name + " kept the rest for himself and has " + this.wallet + " gold to his name.");
 
-                    if(this.hero.carries)
-                        userData.keyItems.push( this.hero.RemoveKeyItem() );
-
+                    if (this.carries) {
+                        data.user.keyItems.push(this.GetKeyItem());
+                        this.RemoveKeyItem();
+                        helpers.log("The guild treasury now has a " + this.carries + " in storage.");
+                    }
 
                 } else if (loc.type === data.locationTypes.DUNGEON) {
 
-                    // Ignoring a last boss factor
-                    this.hero.AddKeyItem("someItemIdInDungeon");
+                    if(!this.delving && !this.carries) {
 
-                    if (this.hero.carries) {
-                        helpers.log(this.hero.name + " acquired the key item {{itemName}} and is returning to the guild!");
-                        GameManager.Visit("Guild Of Steve");
+                        // We just got here, so start delving for things (TODO: Push states rather than bools to measure what's going on)
+                        this.isDelving = true;
+                        
+                        let self = this;
+
+                        setTimeout(function(){
+                            
+                            self.isDelving = false;
+                            GameManager.Visit("Guild Of Steve");
+
+                            // Ignoring a last boss factor
+                            self.AddKeyItem("Nameless Mask");
+
+                            if (self.carries) {
+
+                                helpers.log(self.name + " acquired the key item {{itemName}} and is returning to the guild!");
+
+                            } else {
+
+                                helpers.log(self.name + " is returning to the guild empty-handed...");
+
+                            }
+
+                        }, 10000);
+                        
                     }
 
                 }

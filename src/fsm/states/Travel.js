@@ -1,4 +1,4 @@
-define(['Base', 'helpers'], function(StateBase, helpers){
+define(['Base', 'helpers'], function (StateBase, helpers) {
 
     'use strict';
 
@@ -19,8 +19,8 @@ define(['Base', 'helpers'], function(StateBase, helpers){
     StateMove.prototype.constructor = StateMove;
 
     StateMove.prototype.Update = function () {
-        // ...
 
+        /// Update location values
         if (Math.abs(helpers.dist(this.params, {
             x: this.owner.x,
             y: this.owner.y
@@ -46,6 +46,20 @@ define(['Base', 'helpers'], function(StateBase, helpers){
         } else {
             helpers.log(">");
             this.isFinished = true;
+        }
+
+        /// Perform logic as travelling happening (TODO: Again these should also be states really. Sub states per say.)
+        if (chance.weighted([0, 1], [0.99, 0.01])) {
+
+            helpers.log(">");
+            helpers.log("Rested >");
+
+            return;
+
+        } else {
+
+            helpers.log(">", true);
+
         }
 
     };

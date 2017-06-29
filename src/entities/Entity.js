@@ -9,7 +9,11 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function (StateMachi
         this.y = y;
 
         this.headingTo = null;
+
+        // Should probably exist on hero only
         this.isTravelling = false;
+        this.isDelving = false;
+        
         this.onArrivedCallback = null;
 
         this.fsm = new StateMachine(new StateIdle("idle", this), [
@@ -41,6 +45,12 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function (StateMachi
         this.currentLevel = values.level;
         this.currentExp = values.exp;
         this.expForLevel = values.forNext;
+
+    };
+
+    Entity.prototype.StartDelving = function() {
+
+        this.isDelving = true;
 
     };
 
