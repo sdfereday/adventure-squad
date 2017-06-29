@@ -1,8 +1,8 @@
-define(['Base', 'helpers'], function (StateBase, helpers) {
+define(['Base', 'helpers', 'chance', 'data'], function (StateBase, helpers, chance, data) {
 
     'use strict';
 
-    var StateMove = function (id, owner) {
+    var StateTravel = function (id, owner) {
 
         StateBase.call(this, id, owner);
 
@@ -15,10 +15,10 @@ define(['Base', 'helpers'], function (StateBase, helpers) {
 
     };
 
-    StateMove.prototype = Object.create(StateBase.prototype);
-    StateMove.prototype.constructor = StateMove;
+    StateTravel.prototype = Object.create(StateBase.prototype);
+    StateTravel.prototype.constructor = StateTravel;
 
-    StateMove.prototype.Update = function () {
+    StateTravel.prototype.Update = function () {
 
         /// Update location values
         if (Math.abs(helpers.dist(this.params, {
@@ -64,7 +64,7 @@ define(['Base', 'helpers'], function (StateBase, helpers) {
 
     };
 
-    StateMove.prototype.Enter = function (params, cb) {
+    StateTravel.prototype.Enter = function (params, cb) {
 
         this.isFinished = false;
 
@@ -76,7 +76,7 @@ define(['Base', 'helpers'], function (StateBase, helpers) {
 
     };
 
-    StateMove.prototype.Exit = function (params) {
+    StateTravel.prototype.Exit = function (params) {
 
         helpers.log("Left state " + this.id);
 
@@ -87,6 +87,6 @@ define(['Base', 'helpers'], function (StateBase, helpers) {
 
     };
 
-    return StateMove;
+    return StateTravel;
 
 });

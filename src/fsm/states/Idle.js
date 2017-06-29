@@ -1,8 +1,8 @@
-define(['Base'], function(StateBase){
+define(['Base'], function (StateBase) {
 
     'use strict';
 
-     var StateIdle = function (id, owner) {
+    var StateIdle = function (id, owner) {
 
         StateBase.call(this, id, owner);
         this.initialState = true;
@@ -13,7 +13,9 @@ define(['Base'], function(StateBase){
     StateIdle.prototype.constructor = StateIdle;
 
     StateIdle.prototype.Enter = function (params) {
+
         this.isFinished = false;
+
     };
 
     return StateIdle;

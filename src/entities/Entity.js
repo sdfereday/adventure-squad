@@ -1,4 +1,5 @@
-define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function (StateMachine, StateIdle, StateMove, helpers, data) {
+define(['StateMachine', 'Idle', 'StateDestination', 'Travel', 'helpers', 'data'],
+function (StateMachine, StateIdle, StateDestination, StateTravel, helpers, data) {
 
     'use strict';
 
@@ -17,7 +18,8 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function (StateMachi
         this.onArrivedCallback = null;
 
         this.fsm = new StateMachine(new StateIdle("idle", this), [
-            new StateMove("move", this)
+            new StateTravel("travel", this),
+            new StateDestination("stateDestination", this)
         ]);
 
         // Comes from json in practice
@@ -80,7 +82,7 @@ define(['StateMachine', 'Idle', 'Move', 'helpers', 'data'], function (StateMachi
 
         if (dest) {
             this.headingTo = dest;
-            this.fsm.Push("move", dest, function () {
+            this.fsm.Push("travel", dest, function () {
                 helpers.log("Arrived at " + d.name);
                 self.isTravelling = false;
                 self.onArrivedCallback(d);

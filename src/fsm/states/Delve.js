@@ -1,4 +1,4 @@
-define(['Base'], function (StateBase) {
+define(['Base', 'chance'], function (StateBase, chance) {
 
     'use strict';
 
